@@ -39,13 +39,12 @@ gulp.task("minifyScripts", ["jsBrowserify"], function(){
 });
 
 
-gulp.task("clean", ["minifyScripts"], function(){
-  console.log('done');
+gulp.task("js", ["jsBrowserify"], function(){
   browserSync.reload();
   return del(['tmp']);
 });
 
-gulp.task('styles', function () {
+gulp.task('css', function () {
   var processors = [ autoprefixer, lost
   ];
   browserSync.reload();
@@ -57,6 +56,10 @@ gulp.task('styles', function () {
     .pipe(gulp.dest('./build/css'));
 });
 
+gulp.task('html', function(){
+  browserSync.reload();
+});
+
 gulp.task('serve', function() {
   browserSync.init({
     server: {
@@ -64,14 +67,8 @@ gulp.task('serve', function() {
       index: "index.html"
     }
   });
-
-  gulp.task('html', function(){
-    browserSync.reload();
-  });
-
-  console.log("Watching js and scss files for modifications");
-  gulp.watch('js/*.js', ["clean"]);
-  gulp.watch('scss/*.scss', ["styles"]);
+  gulp.watch('js/*.js', ["js"]);
+  gulp.watch('scss/*.scss', ["css"]);
   gulp.watch('index.html', ["html"]);
 });
 
