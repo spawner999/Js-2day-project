@@ -3,6 +3,7 @@ var clientId = '44ZBUPBKJLBXBM0IJRZPSM34YPUKNSE2VQCNL041GNFIWRSO';
 var clientKey = 'RPHMMDSE0DQIAY4XZ34WN1ZRTUV250NCNIX05N1WMSRODPJ2';
 var template = 'https://api.foursquare.com/v2/venues/explore?client_id=%CLIENT_ID%&client_secret=%CLIENT_SECRET%&v=20130815&near=%CITY%&venuePhotos=1&query=%query%';
 var Venue = require('./../js/venue.js').Venue;
+var markers = [];
 
 exports.createMap = function(address) {
   var geocoder = new google.maps.Geocoder();
@@ -33,7 +34,14 @@ createMarker = function(venue){
   marker.addListener('click', function() {
    infowindow.open(map, marker);
  });
+ return marker;
 };
+
+clearMarkers = function(markers) {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
+  }
+}
 
 exports.createUrl = function(city, query){
   var url = template.replace('%CLIENT_ID%', clientId).
@@ -45,12 +53,14 @@ exports.createUrl = function(city, query){
 
 exports.apiCall = function(url){
   $.get(url).then(function(response){
-    console.log(response);
+    if(markers){
+      clearMarkers(markers);
+    }
     for(var i=0; i<10; i++){
       var current = response.response.groups[0].items[i].venue;
-      console.log(current.photos.groups[0]);
       var venue = new Venue(current.name, current.rating, current.location.lat, current.location.lng, current.location.address, current.photos.groups[0].items[0].suffix);
-      createMarker(venue);
+      var marker = createMarker(venue);
+      markers.push(marker);
     }
   })
 };

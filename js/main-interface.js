@@ -2,14 +2,19 @@ var map;
 var createMap = require('./../js/api-helpers.js').createMap;
 var apiCall = require('./../js/api-helpers.js').apiCall;
 var createUrl = require('./../js/api-helpers.js').createUrl;
-
+var clearMarkers = require('./../js/api-helpers.js').clearMarkers;
+var address;
 
 $(document).ready(function(){
-    $('#token').submit(function(event){
-      event.preventDefault();
-      var address = $('#city').val();
-      var query = $('#category').val();
-      createMap(address);
+  $('#token').submit(function(event){
+    event.preventDefault();
+    address = $('#city').val();
+    createMap(address);
+  });
+  $('#category').change(function() {
+    var query = $('#category').val();
+    if(query){
       apiCall(createUrl(address, query));
-    });
+    }
+});
 });
