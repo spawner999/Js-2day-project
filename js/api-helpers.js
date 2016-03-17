@@ -64,6 +64,7 @@ exports.createUrl = function(city, query){
 
 exports.apiCall = function(url){
   $.get(url).then(function(response){
+    console.log(response);
     if(markers){
       clearMarkers(markers);
     }
@@ -72,6 +73,26 @@ exports.apiCall = function(url){
       var venue = new Venue(current.name, current.rating, current.location.lat, current.location.lng, current.location.address, current.photos.groups[0].items[0].suffix);
       var marker = createMarker(venue);
       markers.push(marker);
+      var card = createCard(venue);
+      console.log(card);
+      $('#slider').append(card);
+      $('.venue__img').click(function(){
+        var current = $(this).parents('.venue').get(0);
+        $(current).find('.card').addClass('flipped')
+        .mouseleave(function(){
+          $(current).find('.card').removeClass('flipped');
+      });
+return false;
+});
     }
   })
 };
+
+var venueTemplate = '<div class="venue"><div class="card"><div class="face front"><div class="venue__img"><div class="venue__title"><h1>%NAME%</h1></div><h4>%RATING%</h4></div><div class="venue__info"><h3>%ADDRESS%</h3><i class="fa fa-star"></i></div></div><div class="face back"><p>lorem ipusm</p></div></div></div>'
+
+function createCard(venue){
+  var card = venueTemplate.replace('%NAME%', venue.name).
+  replace('%ADDRESS%', venue.address).
+  replace('%RATING%', venue.rating);
+  return card;
+}

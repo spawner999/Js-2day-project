@@ -5,9 +5,13 @@ var createUrl = require('./../js/api-helpers.js').createUrl;
 var clearMarkers = require('./../js/api-helpers.js').clearMarkers;
 var address;
 
+
 $(document).ready(function(){
+
+
   $('#token').submit(function(event){
     event.preventDefault();
+    $('#category').prop('selectedIndex',0);
     address = $('#city').val();
     createMap(address);
   });
