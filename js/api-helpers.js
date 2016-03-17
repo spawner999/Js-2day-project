@@ -4,6 +4,7 @@ var clientKey = 'RPHMMDSE0DQIAY4XZ34WN1ZRTUV250NCNIX05N1WMSRODPJ2';
 var template = 'https://api.foursquare.com/v2/venues/explore?client_id=%CLIENT_ID%&client_secret=%CLIENT_SECRET%&v=20130815&near=%CITY%&venuePhotos=1&query=%query%';
 var Venue = require('./../js/venue.js').Venue;
 var markers = [];
+var infowindow;
 
 exports.createMap = function(address) {
   var geocoder = new google.maps.Geocoder();
@@ -27,11 +28,15 @@ createMarker = function(venue){
     map: map,
     position: latlng
   });
-  var infowindow = new google.maps.InfoWindow({
-    content: venue.name + ' ' + venue.rating + '<br>' + '<img src="' + venue.img +
-    '">'
-  });
+  infowindow = new google.maps.InfoWindow();
   marker.addListener('click', function() {
+    clearInfoWindows(markers);
+    infowindow.setContent(venue.name + ' ' + venue.rating + '<br>' + '<img src="' + venue.img +
+    '">');
+    this.setAnimation(google.maps.Animation.BOUNCE);
+    setTimeout(function() {
+      marker.setAnimation(false);
+    }, 2050);
    infowindow.open(map, marker);
  });
  return marker;
@@ -40,6 +45,12 @@ createMarker = function(venue){
 clearMarkers = function(markers) {
   for (var i = 0; i < markers.length; i++) {
     markers[i].setMap(null);
+  }
+}
+
+clearInfoWindows = function(markers) {
+  for (var i = 0; i < markers.length; i++) {
+    infowindow.open(map, markers[i]);
   }
 }
 
